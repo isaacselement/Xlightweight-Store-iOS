@@ -16,6 +16,16 @@
     self = [super init];
     if (self) {
         _moduleName = moduleName;
+
+        // fix length
+        NSString *filling = @"00000000000000000000000000000000";
+        if (key != nil && key.length != 0 && key.length != 32) {
+            key = [[NSString stringWithFormat:@"%@%@", key, filling] substringWithRange:NSMakeRange(0, 32)];
+        }
+        if (iv != nil && iv.length != 0 && iv.length != 16) {
+            iv = [[NSString stringWithFormat:@"%@%@", iv, filling] substringWithRange:NSMakeRange(0, 16)];
+        }
+
         _aesKey = key;
         _aesIV = iv;
         
@@ -42,7 +52,7 @@
 #pragma mark - Transformer
 
 - (BOOL)isEnableCrypto {
-    return self.aesKey != nil && self.aesIV != nil;
+    return self.aesKey != nil && self.aesIV != nil && self.aesKey.length != 0 && self.aesIV.length != 0;
 }
 
 - (nullable NSString *)encodeKey:(nullable NSString *)defaultName {

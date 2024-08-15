@@ -54,12 +54,17 @@
         NSString *aesKey = [spec objectForKey:@"aesKey"];
         NSString *aesIV = [spec objectForKey:@"aesIV"];
         BOOL isKeepKeyClearText = [[spec objectForKey:@"isKeepKeyClearText"] boolValue];
-        store = [[TlStoreProxy alloc] initWithName:module aesKey:aesKey aesIV:aesIV];
+
+        TlStoreProxy *proxy = [[TlStoreProxy alloc] initWithName:module aesKey:aesKey aesIV:aesIV];
+        store = proxy;
         [self.mStores setObject:store forKey:module];
-        
-        if (isKeepKeyClearText && [((TlStoreProxy *)store).myProxy isKindOfClass:TlStoreBase.class]) {
-            TlStoreBase *sp = (TlStoreBase *)((TlStoreProxy *)store).myProxy;
-            sp.keyTransformer = nil;
+
+        if (isKeepKeyClearText) {
+            id<TlStoreProtocol> myProxy = proxy.myProxy;
+            if ([myProxy isKindOfClass:TlStoreBase.class]) {
+                TlStoreBase *sp = (TlStoreBase *)myProxy;
+                sp.keyTransformer = nil;
+            }
         }
     }
     return store;
