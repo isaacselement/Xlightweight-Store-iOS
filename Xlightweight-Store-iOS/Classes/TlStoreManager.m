@@ -38,10 +38,12 @@
  */
 
 - (void)registration:(NSString * _Nonnull)module aesKey:(NSString * _Nullable)aesKey aesIV:(NSString * _Nullable)aesIV isKeepKeyClearText:(BOOL)isKeepKeyClearText {
+    if (module == nil) return;
     NSMutableDictionary *spec = [NSMutableDictionary dictionary];
     if (aesKey != nil) [spec setObject:aesKey forKey:@"aesKey"];
     if (aesIV != nil) [spec setObject:aesIV forKey:@"aesIV"];
     if (isKeepKeyClearText == TRUE) [spec setObject:@(TRUE) forKey:@"isKeepKeyClearText"];
+    [self.mStores removeObjectForKey:module];
     [self.mSpecs setObject:spec forKey:module];
 }
 
